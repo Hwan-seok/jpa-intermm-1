@@ -1,12 +1,13 @@
 package jpabook.jpashop.domain
 
+import javax.persistence.Column
 import javax.persistence.Embeddable
 
 @Embeddable
 class Address(
-    var zipCode: String,
-    var street: String,
-    var city: String,
-) {
-
-}
+    @Column
+    val city: String,
+    val street: String,
+    @Column(nullable = true)
+    val zipCode: Int,
+)

@@ -1,26 +1,58 @@
 package jpabook.jpashop.domain
 
-import jpabook.jpashop.domain.item.Item
 import javax.persistence.*
 
 @Entity
-@Table(name = "order_item")
-class OrderItem(
+class OrderItem {
 
-    @Id @GeneratedValue
+    protected constructor(
+        item: Item,
+        orderPrice: Int,
+        count: Int,
+    ) {
+        this.item = item
+        this.orderPrice = orderPrice
+        this.count = count
+    }
+
+
+    @Id
+    @GeneratedValue
     @Column(name = "order_item_id")
-    var id: Long? = null,
+    val id: Long? = null
 
-    @OneToMany
-    var item: MutableList<Item>,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    val item: Item
+
+    val orderPrice: Int
+
+    val count: Int
+
+    companion object {
+        fun createOrderItem(item: Item, orderPrice: Int, count: Int): OrderItem {
+            val orderItem = OrderItem(
+                item = item,
+                orderPrice = orderPrice,
+                count = count
+            )
+            item.removeStock(count)
+            return orderItem
+        }
+    }
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
-    var order: Order,
+    lateinit var order: Order
 
-    var orderPrice: Int,
+    fun cancel() {
+        item.addStock(count)
+    }
 
-    var count: Int,
-)
+    fun getTotalPrice(): Int {
+        return orderPrice * count
+    }
 
-
+}

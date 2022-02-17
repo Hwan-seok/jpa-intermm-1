@@ -6,25 +6,48 @@ import javax.persistence.*
 @Entity
 @Table(name = "orders")
 class Order(
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "order_id")
-    var id: Long? = null,
+    val id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    var member: Member,
+    val member: Member,
 
-    @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL])
-    var orderItems: List<OrderItem>,
-
-    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id")
-    var delivery: Delivery,
+    val delivery: Delivery,
 
-    var orderDate: LocalDateTime,
+    @OneToMany(mappedBy = "order")
+    val orderItems: MutableList<OrderItem> = mutableListOf(),
+
+    val orderDate: LocalDateTime = LocalDateTime.now(),
 
     @Enumerated(EnumType.STRING)
-    var status: OrderStatus,
+    var status: OrderStatus = OrderStatus.ORDER,
 ) {
+    companion object {
+        fun createOrder(member: Member, delivery: Delivery, vararg orderItems: OrderItem): Order {
+            val order = Order(
+                member = member,
+                delivery = delivery,
+            )
+            delivery.order = order
+            order.orderItems.addAll(orderItems)
+            orderItems.forEach { it.order = order }
+            return order
+        }
+    }
 
+    fun cancelOrder() {
+        if (delivery.status == DeliveryStatus.END) throw  IllegalStateException("배송 끝나면 불가")
+
+        status = OrderStatus.CANCEL
+        orderItems.forEach { it.cancel() }
+    }
+
+    fun getTotalPrice(): Int {
+        return orderItems.sumOf { it.getTotalPrice() }
+    }
 }

@@ -6,14 +6,16 @@ import javax.persistence.*
 class Delivery(
     @Id @GeneratedValue
     @Column(name = "delivery_id")
-    var id: Long?,
+    val id: Long? = null,
 
-    @OneToOne(mappedBy = "delivery")
-    var order: Order,
-
-    @Embedded
-    var address: Address,
 
     @Enumerated(EnumType.STRING)
-    var status: DeliveryStatus,
-)
+    val status: DeliveryStatus = DeliveryStatus.INIT,
+
+    @Embedded
+    val address: Address,
+) {
+
+    @OneToOne(mappedBy = "delivery")
+    lateinit var order: Order
+}

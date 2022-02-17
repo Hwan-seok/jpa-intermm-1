@@ -1,28 +1,29 @@
 package jpabook.jpashop.domain
 
-import jpabook.jpashop.domain.item.Item
 import javax.persistence.*
 
 @Entity
-class Category(
+class Category
+    (
     @Id @GeneratedValue
     @Column(name = "category_id")
-    var id: Long? = null,
+    val id: Long? = null,
 
-    var name: String,
+
+    val name: String,
 
     @ManyToMany
     @JoinTable(
         name = "category_item",
-        joinColumns = [JoinColumn(name = "category_id")],
-        inverseJoinColumns = [JoinColumn(name = "item_id")]
+        joinColumns = [JoinColumn(name = "category_id")], inverseJoinColumns = [JoinColumn(name = "item_id")]
     )
-    var items: MutableList<Item>,
+    val items: MutableList<Item> = mutableListOf(),
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    var parent: Category,
+    val parent: Category,
 
     @OneToMany(mappedBy = "parent")
-    var child: MutableList<Category>
+    val child: MutableList<Category> = mutableListOf()
+
 )
