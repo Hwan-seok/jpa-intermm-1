@@ -5,7 +5,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "orders")
-class Order(
+class Order private constructor(
     @Id
     @GeneratedValue
     @Column(name = "order_id")

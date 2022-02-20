@@ -3,7 +3,7 @@ package jpabook.jpashop.domain
 import javax.persistence.*
 
 @Entity
-class OrderItem protected constructor(
+class OrderItem private constructor(
     @Id
     @GeneratedValue
     @Column(name = "order_item_id")
@@ -14,6 +14,10 @@ class OrderItem protected constructor(
     val orderPrice: Int,
     val count: Int,
 ) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    lateinit var order: Order
+
     companion object {
         fun createOrderItem(item: Item, orderPrice: Int, count: Int): OrderItem {
             val orderItem = OrderItem(
@@ -25,10 +29,6 @@ class OrderItem protected constructor(
             return orderItem
         }
     }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    lateinit var order: Order
 
     fun cancel() {
         item.addStock(count)
