@@ -15,11 +15,11 @@ class Order(
     @JoinColumn(name = "member_id")
     val member: Member,
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "delivery_id")
     val delivery: Delivery,
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL])
     val orderItems: MutableList<OrderItem> = mutableListOf(),
 
     val orderDate: LocalDateTime = LocalDateTime.now(),
