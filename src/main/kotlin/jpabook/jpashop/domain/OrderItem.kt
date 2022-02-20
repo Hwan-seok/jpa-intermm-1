@@ -4,7 +4,6 @@ import javax.persistence.*
 
 @Entity
 class OrderItem {
-
     protected constructor(
         item: Item,
         orderPrice: Int,
@@ -15,19 +14,15 @@ class OrderItem {
         this.count = count
     }
 
-
     @Id
     @GeneratedValue
     @Column(name = "order_item_id")
     val id: Long? = null
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     val item: Item
-
     val orderPrice: Int
-
     val count: Int
 
     companion object {
@@ -42,7 +37,6 @@ class OrderItem {
         }
     }
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     lateinit var order: Order
@@ -54,5 +48,4 @@ class OrderItem {
     fun getTotalPrice(): Int {
         return orderPrice * count
     }
-
 }

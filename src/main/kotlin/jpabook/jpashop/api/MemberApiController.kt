@@ -2,6 +2,7 @@ package jpabook.jpashop.api
 
 import jpabook.jpashop.domain.Address
 import jpabook.jpashop.domain.Member
+import jpabook.jpashop.dto.Result
 import jpabook.jpashop.service.MemberService
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -23,10 +24,6 @@ class MemberApiController(
         val findMembers = memberService.findMembers()
         return Result(findMembers.map { MemberResponseDto(it.name) })
     }
-
-    data class Result<T>(
-        val data: T,
-    )
 
     data class MemberResponseDto(
         val name: String,
